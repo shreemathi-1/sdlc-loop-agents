@@ -1,0 +1,61 @@
+# .github/sdlc/config.yml  -- filled by a human before the first run. Agents read; never write.
+# A1.12 bootstrap stops if any key under required: is missing or TBD.
+required:
+  - project.name
+  - project.platform
+  - approvers.CP-01
+  - approvers.CP-02
+  - approvers.CP-03
+  - approvers.CP-04
+  - approvers.CP-05
+  - limits.fix_loop_max
+  - definition_of_ready
+  - git.default_branch
+# Not required at bootstrap (set after CP-03): project.stack, commands.*, coverage_threshold
+project:
+  name: sdlc-dry-run
+  platform: web            # web | mobile | both
+  stack: TBD               # set after CP-03 (e.g. react+node, flutter+fastapi)
+approvers:                 # PROPOSED roles; put real names
+  CP-01: Product Owner
+  CP-02: Product Owner
+  CP-03: Tech Lead
+  CP-04: QA Lead
+  CP-05: Product Owner
+  CP-06: Tech Lead
+  CP-07: Product Owner
+  CP-08: Repo owner
+  CP-09: Tech Lead
+limits:
+  fix_loop_max: 3          # R6, approved
+  output_max_lines: 120    # R11, per output file
+  skill_max_lines: 60      # R11, per SKILL.md
+definition_of_ready:       # A2.09 checks each item
+  - role, goal and benefit stated
+  - at least one Given/When/Then criterion per story, one observable result each
+  - platform stated or TBD with a CP-07 raised
+  - every CP-07 answered or accepted
+  - source ID on every story
+commands:                  # set after CP-03
+  lint: TBD
+  typecheck: TBD
+  unit_test: TBD
+  e2e_test: TBD
+  build: TBD
+coverage_threshold: TBD
+estimation_scale: TBD
+git:
+  default_branch: main
+  test_branch: test
+  branch_pattern: "<type>/<task-id>"
+  kanban_commit: "kanban: <ID> <from> -> <to>"
+kanban:
+  columns:
+    - {name: Backlog,       owner: A1,     exit: "Routed to A2",                                                      checkpoint: none}
+    - {name: Ready,         owner: A2,     exit: "Definition of Ready passed; all CP-07 for the item APPROVED; CP-01 APPROVED", checkpoint: CP-01}
+    - {name: Design,        owner: "A3, A4", exit: "CP-02 and CP-03 APPROVED; tasks written",                         checkpoint: "CP-02, CP-03"}
+    - {name: In Progress,   owner: "A5, A6", exit: "Every task: task gate passed, PR open, CI green",                 checkpoint: none}
+    - {name: Testing,       owner: A7,     exit: "Traceability complete; CP-04 APPROVED",                             checkpoint: CP-04}
+    - {name: Review,        owner: A8,     exit: "No blocker or major open; loop count under fix_loop_max",           checkpoint: "CP-06 at limit"}
+    - {name: Release Ready, owner: A8,     exit: "Release checklist complete; CP-05 APPROVED",                        checkpoint: CP-05}
+    - {name: Done,          owner: A1,     exit: "Deployed",                                                          checkpoint: none}
